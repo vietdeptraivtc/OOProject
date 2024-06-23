@@ -7,7 +7,7 @@ public class TreeVisualizerApp {
     private JFrame frame;
     private JComboBox<String> treeTypeComboBox, traverseOrderComboBox;
     private JButton insertButton, deleteButton, updateButton, traverseButton, searchButton, createButton;
-    private JButton pauseButton, continueButton, stepForwardButton, stepBackwardButton, undoButton, redoButton, helpButton, quitButton, backButton;
+    private JButton helpButton, exitButton; // New buttons
     private JPanel treePanel;
     private JTextField nodeValueField, parentNodeField, oldValueField, newValueField;
     private JTextArea codePanel;
@@ -22,7 +22,7 @@ public class TreeVisualizerApp {
         frame.setSize(800, 600);
         frame.setLayout(new BorderLayout());
 
-        JPanel controlPanel = new JPanel(new GridLayout(3, 2));
+        JPanel controlPanel = new JPanel(new GridLayout(7, 2)); // Adjusted for more buttons
 
         treeTypeComboBox = new JComboBox<>(new String[]{"Generic Tree", "Binary Tree", "Balanced Tree", "Balanced Binary Tree"});
         controlPanel.add(new JLabel("Tree Type:"));
@@ -32,9 +32,13 @@ public class TreeVisualizerApp {
         createButton.addActionListener(e -> createTree());
         controlPanel.add(createButton);
 
-        traverseOrderComboBox = new JComboBox<>(new String[]{"Preorder", "Postorder", "Inorder"});
-        controlPanel.add(new JLabel("Traversal Order:"));
-        controlPanel.add(traverseOrderComboBox);
+        controlPanel.add(new JLabel("Node Value:"));
+        nodeValueField = new JTextField();
+        controlPanel.add(nodeValueField);
+
+        controlPanel.add(new JLabel("Parent Node (for Generic Tree):"));
+        parentNodeField = new JTextField();
+        controlPanel.add(parentNodeField);
 
         insertButton = new JButton("Insert");
         insertButton.addActionListener(e -> performInsert());
@@ -44,9 +48,21 @@ public class TreeVisualizerApp {
         deleteButton.addActionListener(e -> performDelete());
         controlPanel.add(deleteButton);
 
+        controlPanel.add(new JLabel("Old Value:"));
+        oldValueField = new JTextField();
+        controlPanel.add(oldValueField);
+
+        controlPanel.add(new JLabel("New Value:"));
+        newValueField = new JTextField();
+        controlPanel.add(newValueField);
+
         updateButton = new JButton("Update");
         updateButton.addActionListener(e -> performUpdate());
         controlPanel.add(updateButton);
+
+        traverseOrderComboBox = new JComboBox<>(new String[]{"Preorder", "Inorder", "Postorder"});
+        controlPanel.add(new JLabel("Traversal Order:"));
+        controlPanel.add(traverseOrderComboBox);
 
         traverseButton = new JButton("Traverse");
         traverseButton.addActionListener(e -> performTraverse());
@@ -56,21 +72,14 @@ public class TreeVisualizerApp {
         searchButton.addActionListener(e -> performSearch());
         controlPanel.add(searchButton);
 
-        nodeValueField = new JTextField();
-        controlPanel.add(new JLabel("Node Value:"));
-        controlPanel.add(nodeValueField);
+        // Adding Help and Exit buttons
+        helpButton = new JButton("Help");
+        helpButton.addActionListener(e -> showHelp());
+        controlPanel.add(helpButton);
 
-        parentNodeField = new JTextField();
-        controlPanel.add(new JLabel("Parent Node (for Generic Tree):"));
-        controlPanel.add(parentNodeField);
-
-        oldValueField = new JTextField();
-        controlPanel.add(new JLabel("Old Value:"));
-        controlPanel.add(oldValueField);
-
-        newValueField = new JTextField();
-        controlPanel.add(new JLabel("New Value:"));
-        controlPanel.add(newValueField);
+        exitButton = new JButton("Exit");
+        exitButton.addActionListener(e -> exitApplication());
+        controlPanel.add(exitButton);
 
         frame.add(controlPanel, BorderLayout.NORTH);
 
@@ -100,7 +109,6 @@ public class TreeVisualizerApp {
         updateTreeVisualization(currentTree.getRoot());
     }
 
-
     private void performInsert() {
         try {
             int value = Integer.parseInt(nodeValueField.getText());
@@ -127,7 +135,6 @@ public class TreeVisualizerApp {
             JOptionPane.showMessageDialog(frame, "Invalid input. Please enter a valid integer.");
         }
     }
-
 
     private void performDelete() {
         int value = Integer.parseInt(nodeValueField.getText());
@@ -156,6 +163,20 @@ public class TreeVisualizerApp {
         String message = "Node " + value + (found ? " found." : " not found.");
         JOptionPane.showMessageDialog(frame, message);
         codePanel.setText(message);
+    }
+
+    private void showHelp() {
+        JOptionPane.showMessageDialog(frame, "This is a tree visualizer application.\n" +
+                "You can create different types of trees, insert nodes, delete nodes,\n" +
+                "update nodes, traverse the tree, and search for nodes.\n" +
+                "Select the tree type and perform operations accordingly.");
+    }
+
+    private void exitApplication() {
+        int confirm = JOptionPane.showConfirmDialog(frame, "Are you sure you want to exit?", "Confirm Exit", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            frame.dispose();
+        }
     }
 
     private void updateTreeVisualization(TreeNode root) {
